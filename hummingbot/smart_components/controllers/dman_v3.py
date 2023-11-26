@@ -1,9 +1,11 @@
+import logging
 import time
 from decimal import Decimal
 
 import pandas_ta as ta  # noqa: F401
 
 from hummingbot.core.data_type.common import TradeType
+from hummingbot.logger import HummingbotLogger
 from hummingbot.smart_components.executors.position_executor.data_types import PositionConfig, TrailingStop
 from hummingbot.smart_components.executors.position_executor.position_executor import PositionExecutor
 from hummingbot.smart_components.strategy_frameworks.data_types import OrderLevel
@@ -29,10 +31,17 @@ class DManV3(MarketMakingControllerBase):
     Mean reversion strategy with Grid execution making use of Bollinger Bands indicator to make spreads dynamic
     and shift the mid price.
     """
+    _logger = None
 
     def __init__(self, config: DManV3Config):
         super().__init__(config)
         self.config = config
+
+    @classmethod
+    def logger(cls) -> HummingbotLogger:
+        if cls._logger is None:
+            cls._logger = logging.getLogger(__name__)
+        return cls._logger
 
     def refresh_order_condition(self, executor: PositionExecutor, order_level: OrderLevel) -> bool:
         """
