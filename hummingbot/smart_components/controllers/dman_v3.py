@@ -108,6 +108,10 @@ class DManV3(MarketMakingControllerBase):
         if smart_activation_condition:
             return
 
+        self.logger().info(f"Pair: {self.config.trading_pair}, level: {order_level.level}({order_level.side}), "
+                           f"bollinger mid price: "
+                           f"{bollinger_mid_price:.10f}, bollinger spread: {spread_multiplier:.4%}, final spread from "
+                           f"bollinger mid price: {order_spread_multiplier:.4%}")
         target_spread = spread_multiplier if self.config.dynamic_target_spread else 1
         if order_level.triple_barrier_conf.trailing_stop_activation_price_delta and order_level.triple_barrier_conf.trailing_stop_trailing_delta:
             trailing_stop = TrailingStop(
